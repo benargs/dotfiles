@@ -1,5 +1,5 @@
 vim.cmd("hi clear")
-vim.g.colors_name = "dragon"
+vim.g.colors_name = "kg-dragon"
 vim.o.termguicolors = true
 
 local hi = function(group, opts) vim.api.nvim_set_hl(0, group, opts) end
@@ -54,7 +54,7 @@ local vcs_chg = "#DCA561"
 hi("Normal",       { fg = fg,     bg = bg })
 hi("NormalFloat",  { fg = fg_dim, bg = bg0 })
 hi("NormalNC",     { link = "Normal" })
-hi("FloatBorder",  { fg = "#54546D", bg = bg0 })
+hi("FloatBorder",  { fg = bg6, bg = bg0 })
 hi("FloatTitle",   { fg = special1,  bg = bg0, bold = true })
 hi("FloatFooter",  { fg = bg6,       bg = bg0 })
 
@@ -92,7 +92,7 @@ hi("NonText",      { fg = bg6 })
 hi("Whitespace",   { fg = bg6 })
 hi("SpecialKey",   { fg = special1 })
 
-hi("Pmenu",        { fg = "#DCD7BA", bg = blue_pop1 })
+hi("Pmenu",        { fg = fg, bg = blue_pop1 })
 hi("PmenuSel",     { bg = blue_pop2 })
 hi("PmenuKind",    { fg = fg_dim,   bg = blue_pop1 })
 hi("PmenuKindSel", { fg = fg_dim,   bg = blue_pop2 })

@@ -1,1 +1,1 @@
-vim.cmd.colorscheme("dragon")
+vim.cmd.colorscheme("kg-dragon")
