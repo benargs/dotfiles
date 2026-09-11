@@ -1,0 +1,5 @@
+require "config.remap"
+require "config.set"
+require "config.theme"
+require "config.treesitter"
+require "config.fuzz"
