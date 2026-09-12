@@ -1,5 +1,5 @@
 vim.cmd("hi clear")
-vim.g.colors_name = "kg-wave"
+vim.g.colors_name = "kanagawa-wave"
 vim.o.termguicolors = true
 
 local hi = function(group, opts) vim.api.nvim_set_hl(0, group, opts) end
