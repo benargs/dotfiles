@@ -24,35 +24,6 @@ zle -N down-line-or-beginning-search
 bindkey "^[[A" up-line-or-beginning-search
 bindkey "^[[B" down-line-or-beginning-search
 
-function _git_nl() {
-  GIT_OPTIONAL_LOCKS=0 command git "$@"
-}
-
-function git_prompt() {
-  if ! _git_nl rev-parse --git-dir &> /dev/null; then
-    return 0
-  fi
-  local BRANCH STATUS
-  BRANCH=$(_git_nl symbolic-ref --short HEAD 2> /dev/null) \
-    || BRANCH=$(_git_nl describe --tags --exact-match HEAD 2> /dev/null) \
-    || BRANCH=$(_git_nl rev-parse --short HEAD 2> /dev/null) \
-    || return
-  if [[ -n "$(_git_nl status --porcelain 2> /dev/null)" ]]; then
-    STATUS="*"
-  else
-    STATUS=""
-  fi
-  echo "%F{red}git:(${BRANCH}${STATUS})%f "
-}
-
-function ssh_prompt() {
-  if [[ -n $SSH_CONNECTION || -n $SSH_CLIENT || -n $SSH_TTY ]]; then
-    echo "%F{red}@%m %f"
-  else
-    echo ""
-  fi
-}
-
 alias vim=nvim
 alias vimvim=/usr/bin/vim
 
@@ -60,7 +31,6 @@ source <(fzf --zsh)
 bindkey -s ^f "sessioniser\n"
 
 # https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
-PROMPT='$(ssh_prompt)%F{magenta}[%2c]%f $(git_prompt)%F{yellow}%(?::{%?})%f
-%F{magenta}>%f%{$reset_color%} '
+source "$HOME/.config/zsh/prompt/loader.zsh"
 
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
