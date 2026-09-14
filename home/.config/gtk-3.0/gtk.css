@@ -1,3 +1,5 @@
+/* inert with stock adwaita-dark: needs adw-gtk3-theme installed and
+   gtk-theme set to adw-gtk3-dark in settings.ini */
 @define-color window_bg_color #181616;
 @define-color window_fg_color #c5c9c5;
 @define-color view_bg_color #12120f;

@@ -28,7 +28,7 @@ stow zsh fzf tmux neovim kitty
 
 # desktop
 sway swaybg swayidle swaylock waybar mako rofi
-grim slurp wl-clipboard swappy
+grim slurp wl-clipboard swappy brightnessctl playerctl
 
 # look
 jetbrains-mono-fonts (fonts-jetbrains-mono)
