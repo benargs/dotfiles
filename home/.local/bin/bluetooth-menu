@@ -5,7 +5,7 @@ set -euo pipefail
 if pgrep -f "fuzzel.*--prompt bluetooth " >/dev/null; then pkill -x fuzzel; exit 0; fi
 pkill -x fuzzel || true
 
-menu() { fuzzel --dmenu --anchor top-right --y-margin 0 --x-margin 8 --width 36 --lines 8 --font "JetBrains Mono:size=10" "$@"; }
+menu() { fuzzel --dmenu --anchor top-right --y-margin 0 --x-margin 8 --width 36 --lines 8 --font "JetBrains Mono:size=8" "$@"; }
 
 powered=$(bluetoothctl show 2>/dev/null | grep -q 'Powered: yes' && echo yes || echo no)
 labels=() targets=()

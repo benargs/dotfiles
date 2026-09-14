@@ -5,7 +5,7 @@ set -euo pipefail
 if pgrep -f "fuzzel.*--prompt wifi " >/dev/null; then pkill -x fuzzel; exit 0; fi
 pkill -x fuzzel || true
 
-menu() { fuzzel --dmenu --anchor top-right --y-margin 0 --x-margin 8 --width 36 --lines 8 --font "JetBrains Mono:size=10" "$@"; }
+menu() { fuzzel --dmenu --anchor top-right --y-margin 0 --x-margin 8 --width 36 --lines 8 --font "JetBrains Mono:size=8" "$@"; }
 
 (nmcli dev wifi rescan >/dev/null 2>&1 &)   # refresh for next time; show the cached list now
 all=$(nmcli -t -f ACTIVE,SSID,SIGNAL,SECURITY dev wifi list --rescan no)
