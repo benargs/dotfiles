@@ -13,6 +13,7 @@ input "type:pointer" {
 
 # apps
 exec mako
+exec swayidle -w lock swaylock before-sleep swaylock
 set $term kitty
 set $menu rofi -show drun
 
@@ -53,6 +54,7 @@ bindsym $mod+space exec $menu
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exec swaynag -t warning -m 'Do you really want to exit?' -B 'Yes, exit sway' 'swaymsg exit'
+bindsym $mod+Shift+Escape exec swaylock
 
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
