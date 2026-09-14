@@ -10,12 +10,7 @@
 
     "sway/workspaces": {
         "disable-scroll": true,
-        "format": "{icon}",
-        "format-icons": {
-            "focused": "●",
-            "urgent": "!",
-            "default": "○"
-        }
+        "format": "{name}"
     },
     "clock": {
         "format": " {:%a %d %b  %H:%M}",

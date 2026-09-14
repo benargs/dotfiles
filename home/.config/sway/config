@@ -63,6 +63,10 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exec swaynag -t warning -m 'Do you really want to exit?' -B 'Yes, exit sway' 'swaymsg exit'
 bindsym $mod+Shift+Escape exec swaylock
 
+# screenshots: drag a region -> clipboard / ~/Pictures
+bindsym $mod+Shift+s exec grim -g "$(slurp)" - | wl-copy
+bindsym $mod+Ctrl+Shift+s exec grim -g "$(slurp)" ~/Pictures/$(date +%Y-%m-%d_%H-%M-%S).png
+
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2
 bindsym $mod+3 workspace number 3
