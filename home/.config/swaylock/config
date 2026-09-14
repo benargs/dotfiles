@@ -1,36 +1,37 @@
 ignore-empty-password
 show-failed-attempts
 indicator-caps-lock
+indicator-idle-visible
+hide-keyboard-layout
 daemonize
 
-indicator-idle-visible
-
 font=JetBrains Mono
-indicator-radius=120
-indicator-thickness=10
+font-size=22
+indicator-radius=140
+indicator-thickness=3
 
 color=181616
-inside-color=181616cc
-ring-color=625e5a
+inside-color=00000000
+ring-color=282727
 line-color=00000000
 separator-color=00000000
-text-color=c5c9c5
-key-hl-color=8ba4b0
+text-color=625e5a
+key-hl-color=a6a69c
 bs-hl-color=c4746e
 
-inside-ver-color=181616cc
+inside-ver-color=00000000
 ring-ver-color=c4b28a
 text-ver-color=c4b28a
 
-inside-wrong-color=181616cc
+inside-wrong-color=00000000
 ring-wrong-color=c4746e
 text-wrong-color=c4746e
 
-inside-clear-color=181616cc
+inside-clear-color=00000000
 ring-clear-color=8a9a7b
 text-clear-color=8a9a7b
 
-inside-caps-lock-color=181616cc
+inside-caps-lock-color=00000000
 ring-caps-lock-color=b6927b
 text-caps-lock-color=b6927b
 caps-lock-key-hl-color=b6927b

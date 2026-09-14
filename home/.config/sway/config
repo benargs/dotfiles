@@ -13,7 +13,13 @@ input "type:pointer" {
 
 # apps
 exec mako
-exec swayidle -w lock swaylock before-sleep swaylock
+# idle: lock after $lock_after seconds, screen off $screen_off_after seconds after that
+set $lock_after 1800
+set $screen_off_after 300
+exec swayidle -w \
+    timeout $lock_after 'swaylock' \
+    timeout $(($lock_after + $screen_off_after)) 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+    lock 'swaylock' before-sleep 'swaylock'
 set $term kitty
 set $menu fuzzel
 
