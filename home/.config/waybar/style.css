@@ -38,7 +38,7 @@ window#waybar {
     color: #c4b28a;
 }
 
-#clock, #pulseaudio, #network, #battery, #tray {
+#clock, #pulseaudio, #bluetooth, #network, #battery, #tray {
     padding: 0 10px;
 }
 
@@ -52,5 +52,8 @@ window#waybar {
     color: #a6a69c;
 }
 #pulseaudio.muted {
+    color: #a6a69c;
+}
+#bluetooth.disabled, #bluetooth.off {
     color: #a6a69c;
 }

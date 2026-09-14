@@ -27,7 +27,7 @@ stow -D home          # remove every link, leaving machine-owned files alone
 stow zsh fzf tmux neovim kitty
 
 # desktop
-sway swaybg swayidle swaylock waybar mako rofi
+sway swaybg swayidle swaylock waybar mako fuzzel
 grim slurp wl-clipboard swappy brightnessctl playerctl
 
 # look

@@ -15,7 +15,7 @@ input "type:pointer" {
 exec mako
 exec swayidle -w lock swaylock before-sleep swaylock
 set $term kitty
-set $menu rofi -show drun
+set $menu fuzzel
 
 # assignemnts
 assign [app_id="com.slack.Slack"] workspace number 5

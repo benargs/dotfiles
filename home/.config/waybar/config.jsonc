@@ -6,7 +6,7 @@
 
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["clock"],
-    "modules-right": ["pulseaudio", "network", "battery", "tray"],
+    "modules-right": ["pulseaudio", "bluetooth", "network", "battery", "tray"],
 
     "sway/workspaces": {
         "disable-scroll": true,
@@ -22,11 +22,24 @@
         "format-icons": { "default": ["", "", ""] },
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
     },
+    "bluetooth": {
+        "format": " {status}",
+        "format-disabled": " off",
+        "format-off": " off",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\n{num_connections} connected\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}",
+        "on-click": "~/.local/bin/bluetooth-menu",
+        "on-click-right": "bluetoothctl show | grep -q 'Powered: yes' && bluetoothctl power off || bluetoothctl power on"
+    },
     "network": {
         "format-wifi": " {essid}",
         "format-ethernet": " {ipaddr}",
         "format-disconnected": " offline",
-        "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
+        "on-click": "~/.local/bin/wifi-menu"
     },
     "battery": {
         "states": { "warning": 30, "critical": 15 },

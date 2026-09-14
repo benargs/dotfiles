@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# clicking the same bar item again closes this menu; any other open menu is replaced
+if pgrep -f "fuzzel.*--prompt bluetooth " >/dev/null; then pkill -x fuzzel; exit 0; fi
+pkill -x fuzzel || true
+
+menu() { fuzzel --dmenu --anchor top-right --y-margin 0 --x-margin 8 --width 36 --lines 8 --font "JetBrains Mono:size=10" "$@"; }
+
+powered=$(bluetoothctl show 2>/dev/null | grep -q 'Powered: yes' && echo yes || echo no)
+labels=() targets=()
+add() { labels+=("$1"); targets+=("$2"); }
+if [[ $powered == yes ]]; then
+  add "power off" power
+  add "scan for new devices" scan
+  while read -r _ mac name; do
+    info=$(bluetoothctl info "$mac")
+    if grep -q 'Connected: yes' <<<"$info"; then add "* $name" "disconnect $mac"
+    elif grep -q 'Paired: yes' <<<"$info"; then add "  $name" "connect $mac"
+    else add "  $name (new)" "pair $mac"; fi
+  done < <(bluetoothctl devices)
+else
+  add "power on" power
+fi
+
+i=$(printf '%s\n' "${labels[@]}" | menu --index --prompt "bluetooth ") || exit 0
+read -r action mac <<<"${targets[$i]}"; name=${labels[$i]#[* ] }
+
+case $action in
+  power) if [[ $powered == yes ]]; then bluetoothctl power off; else rfkill unblock bluetooth; bluetoothctl power on; fi ;;
+  scan) notify-send "bluetooth" "scanning for 8s..."; bluetoothctl --timeout 8 scan on >/dev/null; exec "$0" ;;
+  disconnect) bluetoothctl disconnect "$mac" >/dev/null && notify-send "bluetooth" "disconnected $name" ;;
+  pair|connect)
+    [[ $action == pair ]] && bluetoothctl pair "$mac" >/dev/null
+    bluetoothctl trust "$mac" >/dev/null
+    bluetoothctl connect "$mac" >/dev/null && notify-send "bluetooth" "connected $name" \
+      || notify-send -u critical "bluetooth" "failed to connect $name" ;;
+esac
