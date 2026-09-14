@@ -8,44 +8,49 @@ function prompt_seg_ssh() {
   fi
 }
 
-function _prompt_git_branch() {
-  _git_nl symbolic-ref --short HEAD 2> /dev/null \
-    || _git_nl describe --tags --exact-match HEAD 2> /dev/null \
-    || _git_nl rev-parse --short HEAD 2> /dev/null
-}
-
-function _prompt_git_dirty() {
-  [[ -n "$(_git_nl status --porcelain 2> /dev/null)" ]] && echo "*"
+function _prompt_git_status() {
+  local raw line ab
+  raw=$(_git_nl status --porcelain=v2 --branch 2> /dev/null) || return
+  branch= dirty= ahead=0 behind=0
+  while IFS= read -r line; do
+    case $line in
+      '# branch.head '*) branch=${line#'# branch.head '} ;;
+      '# branch.ab '*)
+        ab=${line#'# branch.ab '}
+        ahead=${ab%% *}; ahead=${ahead#+}
+        behind=${ab##* }; behind=${behind#-}
+        ;;
+      '#'*) ;;
+      *) dirty="*" ;;
+    esac
+  done <<< "$raw"
+  [[ -z $branch ]] && return 1
+  if [[ $branch == '(detached)' ]]; then
+    branch=$(_git_nl describe --tags --exact-match HEAD 2> /dev/null) \
+      || branch=$(_git_nl rev-parse --short HEAD 2> /dev/null) \
+      || return 1
+  fi
 }
 
 function prompt_seg_git() {
-  _git_nl rev-parse --git-dir &> /dev/null || return
-  local branch=$(_prompt_git_branch)
-  [[ -z $branch ]] && return
-  echo "%F{red}git:(${branch}$(_prompt_git_dirty))%f "
+  local branch dirty ahead behind
+  _prompt_git_status || return
+  echo "%F{red}git:(${branch}${dirty})%f "
 }
 
 function prompt_seg_git_detailed() {
-  _git_nl rev-parse --git-dir &> /dev/null || return
-  local branch=$(_prompt_git_branch)
-  [[ -z $branch ]] && return
-  local dirty=$(_prompt_git_dirty)
-  local counts=$(_git_nl rev-list --left-right --count 'HEAD...@{upstream}' 2> /dev/null)
-  local ahead behind
-  if [[ -n $counts ]]; then
-    ahead=${counts%%$'\t'*}
-    behind=${counts##*$'\t'}
-  fi
+  local branch dirty ahead behind
+  _prompt_git_status || return
   local out="%F{red}git:(${branch}${dirty})%f"
-  [[ -n $ahead && $ahead -gt 0 ]] && out+=" %F{cyan}⇡${ahead}%f"
-  [[ -n $behind && $behind -gt 0 ]] && out+=" %F{cyan}⇣${behind}%f"
+  [[ $ahead -gt 0 ]] && out+=" %F{cyan}⇡${ahead}%f"
+  [[ $behind -gt 0 ]] && out+=" %F{cyan}⇣${behind}%f"
   echo "${out} "
 }
 
 function prompt_seg_venv() {
   local name
   if [[ -n $VIRTUAL_ENV ]]; then
-    name=$(basename "$VIRTUAL_ENV")
+    name=${VIRTUAL_ENV:t}
   elif [[ -n $CONDA_DEFAULT_ENV && $CONDA_DEFAULT_ENV != base ]]; then
     name=$CONDA_DEFAULT_ENV
   else
