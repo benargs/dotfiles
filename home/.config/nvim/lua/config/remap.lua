@@ -6,3 +6,4 @@ vim.keymap.set("n", "<leader>pf", fuzz.find_sans_git, { desc = "Find files (excl
 vim.keymap.set("n", "<leader>pt", fuzz.find_files, { desc = "Find files" })
 vim.keymap.set("n", "<leader>pg", fuzz.live_grep,  { desc = "Live grep" })
 vim.keymap.set("n", "<leader>fw", fuzz.grep_string, { desc = "Grep word under cursor" })
+vim.keymap.set("n", "<leader>gb", require("config.blame").toggle, { desc = "Toggle inline git blame" })
