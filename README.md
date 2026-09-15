@@ -24,7 +24,7 @@ stow -D home          # remove every link, leaving machine-owned files alone
 
 ```
 # shell
-stow zsh fzf tmux neovim kitty
+stow zsh fzf tmux neovim kitty jq tree-sitter-cli
 
 # desktop
 sway swaybg swayidle swaylock waybar mako fuzzel
@@ -39,4 +39,14 @@ adw-gtk3-theme
 alacritty
 ```
 
+## Treesitter
 
+No nvim-treesitter plugin. Parsers are pinned in `home/.config/nvim/treesitter.json` (url +
+commit; `subdir` for grammars inside a bigger repo, e.g. terraform in tree-sitter-hcl).
+`treesitter-install [lang...]` builds them and fetches their queries from nvim-treesitter at
+the commit pinned in the script (`NVIM_TS_REF`) - the same commit the json hashes came from,
+so parsers and queries match. `treesitter.lua` highlights whatever the json lists (+builtins).
+
+Adding or updating a language: take its url + revision from nvim-treesitter's
+`lua/nvim-treesitter/parsers.lua` at `NVIM_TS_REF` into the json, `treesitter-install <lang>`.
+To move everything forward, bump `NVIM_TS_REF` and redo the hashes from that commit's parsers.lua.

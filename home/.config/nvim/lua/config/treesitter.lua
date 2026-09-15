@@ -1,16 +1,9 @@
-local PARSERS = {
-    -- builtins
-    "lua",
-    "c",
-    "markdown",
-    "query",
-    "vim",
-    "vimdoc",
-
-    -- custom
-    "go",
-    "python",
-}
+local PARSERS = { "lua", "c", "markdown", "query", "vim", "vimdoc" }
+local f = io.open(vim.fn.stdpath("config") .. "/treesitter.json")
+if f then
+  for name in pairs(vim.json.decode(f:read("a"))) do table.insert(PARSERS, name) end
+  f:close()
+end
 
 ---@param parser string
 local function can_highlight(parser)

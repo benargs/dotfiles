@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# treesitter-install [parser...]   build the parsers pinned in nvim/treesitter.json (all if none given)
+# and fetch their queries from nvim-treesitter at $NVIM_TS_REF. Needs: git, jq, curl, tree-sitter.
+set -euo pipefail
+
+parsers_file="${XDG_CONFIG_HOME:-$HOME/.config}/nvim/treesitter.json"
+clone_dir="${CLONE_DIR:-$HOME/.local/share/treesitter-parsers}"
+site_dir="${NVIM_SITE_DIR:-$HOME/.local/share/nvim/site}"
+nvim_ts_ref="${NVIM_TS_REF:-4967fa48}"   # nvim-treesitter (main) commit the json hashes were taken from
+mkdir -p "$clone_dir" "$site_dir/parser" "$site_dir/queries"
+
+queries() { # lang: fetch its .scm files, then whatever they "; inherits:"
+  local lang=$1 dir="$site_dir/queries/$1" q got=0
+  mkdir -p "$dir"
+  for q in highlights folds indents injections locals; do
+    curl -sfL "https://raw.githubusercontent.com/nvim-treesitter/nvim-treesitter/$nvim_ts_ref/runtime/queries/$lang/$q.scm" -o "$dir/$q.scm" && got=1 || rm -f "$dir/$q.scm"
+  done
+  (( got )) || { rmdir "$dir" 2>/dev/null; echo "$lang: no queries at nvim-treesitter@$nvim_ts_ref" >&2; return 1; }
+  for base in $(grep -ho '^; inherits: .*' "$dir"/*.scm | sed 's/; inherits: //; s/,/ /g'); do
+    [[ -d $site_dir/queries/$base ]] || queries "$base"
+  done
+}
+
+if [[ $# -gt 0 ]]; then wanted=("$@"); else mapfile -t wanted < <(jq -r 'keys[]' "$parsers_file"); fi
+
+failed=()
+for name in "${wanted[@]}"; do
+  if ! jq -e --arg p "$name" 'has($p)' "$parsers_file" >/dev/null; then echo "$name: not in treesitter.json" >&2; failed+=("$name"); continue; fi
+  read -r url hash subdir < <(jq -r --arg p "$name" '.[$p] | "\(.url) \(.hash) \(.subdir // "")"' "$parsers_file")
+  repo="$clone_dir/$(basename "$url")"
+
+  [[ -d $repo/.git ]] || git clone -q --depth 1 "$url" "$repo"
+  if [[ $(git -C "$repo" rev-parse HEAD) != "$hash" ]]; then
+    git -C "$repo" fetch -q --depth 1 origin "$hash" 2>/dev/null || git -C "$repo" fetch -q origin "$hash"
+    git -C "$repo" checkout -q --force "$hash"
+  fi
+
+  if tree-sitter build --output "$site_dir/parser/$name.so" "$repo${subdir:+/$subdir}" 2>/dev/null && queries "$name"; then
+    echo "$name: built"
+  else
+    echo "$name: failed" >&2; failed+=("$name")
+  fi
+done
+
+(( ${#failed[@]} == 0 )) || { echo "failed: ${failed[*]}" >&2; exit 1; }

@@ -1,0 +1,69 @@
+{
+    "bash": {
+        "url": "https://github.com/tree-sitter/tree-sitter-bash",
+        "hash": "a06c2e4415e9bc0346c6b86d401879ffb44058f7"
+    },
+    "cpp": {
+        "url": "https://github.com/tree-sitter/tree-sitter-cpp",
+        "hash": "80f5bd82d3b4a1acf07f34a569d88a4a29f74c42"
+    },
+    "css": {
+        "url": "https://github.com/tree-sitter/tree-sitter-css",
+        "hash": "dda5cfc5722c429eaba1c910ca32c2c0c5bb1a3f"
+    },
+    "dockerfile": {
+        "url": "https://github.com/camdencheek/tree-sitter-dockerfile",
+        "hash": "971acdd908568b4531b0ba28a445bf0bb720aba5"
+    },
+    "go": {
+        "url": "https://github.com/tree-sitter/tree-sitter-go",
+        "hash": "2346a3ab1bb3857b48b29d779a1ef9799a248cd7"
+    },
+    "hcl": {
+        "url": "https://github.com/tree-sitter-grammars/tree-sitter-hcl",
+        "hash": "64ad62785d442eb4d45df3a1764962dafd5bc98b"
+    },
+    "java": {
+        "url": "https://github.com/tree-sitter/tree-sitter-java",
+        "hash": "e10607b45ff745f5f876bfa3e94fbcc6b44bdc11"
+    },
+    "javascript": {
+        "url": "https://github.com/tree-sitter/tree-sitter-javascript",
+        "hash": "58404d8cf191d69f2674a8fd507bd5776f46cb11"
+    },
+    "json": {
+        "url": "https://github.com/tree-sitter/tree-sitter-json",
+        "hash": "001c28d7a29832b06b0e831ec77845553c89b56d"
+    },
+    "python": {
+        "url": "https://github.com/tree-sitter/tree-sitter-python",
+        "hash": "293fdc02038ee2bf0e2e206711b69c90ac0d413f"
+    },
+    "rust": {
+        "url": "https://github.com/tree-sitter/tree-sitter-rust",
+        "hash": "b3e615de069beb04ff44f65ac52f7f03cff04438"
+    },
+    "terraform": {
+        "url": "https://github.com/tree-sitter-grammars/tree-sitter-hcl",
+        "hash": "64ad62785d442eb4d45df3a1764962dafd5bc98b",
+        "subdir": "dialects/terraform"
+    },
+    "toml": {
+        "url": "https://github.com/tree-sitter-grammars/tree-sitter-toml",
+        "hash": "64b56832c2cffe41758f28e05c756a3a98d16f41"
+    },
+    "tsx": {
+        "url": "https://github.com/tree-sitter/tree-sitter-typescript",
+        "hash": "75b3874edb2dc714fb1fd77a32013d0f8699989f",
+        "subdir": "tsx"
+    },
+    "typescript": {
+        "url": "https://github.com/tree-sitter/tree-sitter-typescript",
+        "hash": "75b3874edb2dc714fb1fd77a32013d0f8699989f",
+        "subdir": "typescript"
+    },
+    "yaml": {
+        "url": "https://github.com/tree-sitter-grammars/tree-sitter-yaml",
+        "hash": "4463985dfccc640f3d6991e3396a2047610cf5f8"
+    }
+}
