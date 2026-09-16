@@ -147,5 +147,7 @@ exec_always cat /proc/acpi/button/lid/LID/state | awk '{print $2}' | grep -q 'cl
 
 exec_always swaymsg workspace 1
 
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
 include /etc/sway/config.d/*
 include ~/.config/sway/local

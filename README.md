@@ -29,6 +29,7 @@ stow zsh fzf tmux neovim kitty jq tree-sitter-cli
 # desktop
 sway swaybg swayidle swaylock waybar mako fuzzel
 grim slurp wl-clipboard swappy brightnessctl playerctl
+xdg-desktop-portal-wlr pipewire   # screen sharing
 
 # look
 jetbrains-mono-fonts (fonts-jetbrains-mono)
