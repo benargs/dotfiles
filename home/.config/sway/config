@@ -44,17 +44,17 @@ gaps outer 3
 gaps inner 1
 
 # class                 border  bg      text    indicator child_border
-client.focused          #a6a69c #181616 #c5c9c5 #a6a69c   #a6a69c
-client.focused_inactive #393836 #181616 #a6a69c #393836   #393836
-client.unfocused        #282727 #181616 #625e5a #282727   #282727
-client.urgent           #c4746e #181616 #c5c9c5 #c4746e   #c4746e
+client.focused          #a6a69c #1d1c19 #c5c9c5 #a6a69c   #a6a69c
+client.focused_inactive #393836 #1d1c19 #a6a69c #393836   #393836
+client.unfocused        #282727 #1d1c19 #625e5a #282727   #282727
+client.urgent           #c4746e #1d1c19 #c5c9c5 #c4746e   #c4746e
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
 floating_modifier $mod normal
 
 # override per machine with `output * bg <image> fill` in ~/.config/sway/local
-output * bg #181616 solid_color
+output * bg #1d1c19 solid_color
 output * adaptive_sync on 
 output DP-1 mode 2560x1440@165.060Hz
 output DP-2 mode 2560x1440@60.000Hz
