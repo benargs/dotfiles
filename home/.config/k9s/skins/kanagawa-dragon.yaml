@@ -1,0 +1,82 @@
+# bgColor "default" = terminal background, so it follows kitty
+k9s:
+  body:
+    fgColor: &fg "#c5c9c5"
+    bgColor: &bg default
+    logoColor: &blue "#8ba4b0"
+  prompt:
+    fgColor: *fg
+    bgColor: *bg
+    suggestColor: &dim "#a6a69c"
+  info:
+    fgColor: *dim
+    sectionColor: *fg
+  dialog:
+    fgColor: *fg
+    bgColor: *bg
+    buttonFgColor: *fg
+    buttonBgColor: &bg_hl "#282727"
+    buttonFocusFgColor: "#1d1c19"
+    buttonFocusBgColor: *blue
+    labelFgColor: &yellow "#c4b28a"
+    fieldFgColor: *fg
+  frame:
+    border:
+      fgColor: &border "#625e5a"
+      focusColor: *blue
+    menu:
+      fgColor: *dim
+      keyColor: *yellow
+      numKeyColor: &orange "#b6927b"
+    crumbs:
+      fgColor: "#1d1c19"
+      bgColor: *dim
+      activeColor: *blue
+    status:
+      newColor: &green "#8a9a7b"
+      modifyColor: *blue
+      addColor: *green
+      pendingColor: *orange
+      errorColor: &red "#c4746e"
+      highlightColor: *yellow
+      killColor: &magenta "#a292a3"
+      completedColor: *border
+    title:
+      fgColor: *fg
+      bgColor: *bg
+      highlightColor: *yellow
+      counterColor: *blue
+      filterColor: *magenta
+  views:
+    charts:
+      bgColor: *bg
+      defaultDialColors: [*blue, *red]
+      defaultChartColors: [*blue, *red]
+    table:
+      fgColor: *fg
+      bgColor: *bg
+      cursorFgColor: *fg
+      cursorBgColor: *bg_hl
+      markColor: *yellow
+      header:
+        fgColor: *dim
+        bgColor: *bg
+        sorterColor: *blue
+    xray:
+      fgColor: *fg
+      bgColor: *bg
+      cursorColor: *bg_hl
+      graphicColor: *blue
+      showIcons: false
+    yaml:
+      keyColor: *blue
+      colonColor: *border
+      valueColor: *fg
+    logs:
+      fgColor: *fg
+      bgColor: *bg
+      indicator:
+        fgColor: *fg
+        bgColor: *bg_hl
+        toggleOnColor: *green
+        toggleOffColor: *border
