@@ -31,6 +31,6 @@ source <(fzf --zsh)
 bindkey -s ^f "sessioniser\n"
 
 # https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
-source "$HOME/.config/zsh/prompt/loader.zsh"
+source "$HOME/.config/zsh/prompt.zsh"
 
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
