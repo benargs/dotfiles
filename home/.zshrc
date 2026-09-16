@@ -26,6 +26,8 @@ bindkey "^[[B" down-line-or-beginning-search
 
 alias vim=nvim
 alias vimvim=/usr/bin/vim
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
 
 source <(fzf --zsh)
 bindkey -s ^f "sessioniser\n"
