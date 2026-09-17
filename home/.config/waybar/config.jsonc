@@ -6,7 +6,7 @@
 
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["clock"],
-    "modules-right": ["pulseaudio", "bluetooth", "network", "battery", "tray"],
+    "modules-right": ["pulseaudio", "bluetooth", "network", "battery", "tray", "custom/power"],
 
     "sway/workspaces": {
         "disable-scroll": true,
@@ -49,5 +49,17 @@
     },
     "tray": {
         "spacing": 8
+    },
+    "custom/power": {
+        "format": "",
+        "tooltip": false,
+        "menu": "on-click",
+        "menu-file": "$HOME/.config/waybar/power-menu.xml",
+        "menu-actions": {
+            "lock": "swaylock",
+            "logout": "swaynag -t warning -m 'Log out?' -B 'Log out' 'swaymsg exit'",
+            "reboot": "swaynag -t warning -m 'Reboot?' -B 'Reboot' 'systemctl reboot'",
+            "shutdown": "swaynag -t warning -m 'Shut down?' -B 'Shut down' 'systemctl poweroff'"
+        }
     }
 }

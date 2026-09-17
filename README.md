@@ -28,7 +28,8 @@ stow zsh fzf tmux neovim kitty jq tree-sitter-cli
 
 # desktop
 sway swaybg swayidle swaylock waybar mako fuzzel
-grim slurp wl-clipboard swappy brightnessctl playerctl
+grim slurp wl-clipboard swappy playerctl
+brightnessctl                     # debian/ubuntu: also `usermod -aG video $USER`, relogin
 xdg-desktop-portal-wlr pipewire   # screen sharing
 
 # look
