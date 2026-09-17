@@ -16,6 +16,10 @@ local function fzf_in_term(cmd, on_select)
     col = math.floor((vim.o.columns - width) / 2),
   })
 
+  local hl = function(name) return vim.api.nvim_get_hl(0, { name = name }) end
+  vim.api.nvim_set_hl(0, "FuzzBorder", { fg = hl("FloatBorder").fg, bg = hl("Normal").bg })
+  vim.wo[win].winhighlight = "NormalFloat:Normal,FloatBorder:FuzzBorder"
+
   local function close()
     if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
     if vim.api.nvim_buf_is_valid(buf) then vim.api.nvim_buf_delete(buf, { force = true }) end

@@ -29,6 +29,15 @@ alias vimvim=/usr/bin/vim
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 
+export FZF_DEFAULT_COMMAND="rg --files --hidden -g '!.git'"
+export FZF_DEFAULT_OPTS="
+  --color=bg:#1d1c19,bg+:#282727,fg:#a6a69c,fg+:#c5c9c5,gutter:#1d1c19
+  --color=hl:#c5c9c5,hl+:#8ba4b0
+  --color=prompt:#c4b28a,pointer:#8ba4b0,marker:#8a9a7b,spinner:#c4b28a
+  --color=info:#737c73,header:#737c73,border:#393836,label:#a6a69c,separator:#393836,scrollbar:#393836
+  --color=preview-bg:#1d1c19,preview-border:#393836
+  --prompt='> ' --pointer='▌' --marker='+'
+  --layout=reverse --info=inline-right --no-separator"
 source <(fzf --zsh)
 bindkey -s ^f "sessioniser\n"
 
