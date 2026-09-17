@@ -1,0 +1,29 @@
+set main-view       = line-number:no id:yes,width=8 date:relative-compact author:abbreviated,width=10 commit-title:yes,graph,refs,overflow=no
+set blame-view      = date:relative-compact author:abbreviated,width=10 id:yes,color line-number:yes,interval=1 text
+set vertical-split  = auto
+set ignore-case     = smart-case
+set tab-size        = 4
+set mouse           = true
+
+color cursor        default color235
+color title-focus   default default bold
+color title-blur    color8  default
+color status        color8  default
+color line-number   color8  default
+color delimiter     color8  default
+
+color date          blue    default
+color author        magenta default
+color main-head     yellow  default bold
+color main-ref      cyan    default
+color main-tag      yellow  default
+color main-remote   red     default
+color main-tracked  green   default
+
+color diff-header   yellow  default
+color diff-chunk    magenta default
+color diff-add      green   default
+color diff-del      red     default
+color diff-stat     blue    default
+color "Signed-off-by" color8 default
+color "Claude-Session:" color8 default
