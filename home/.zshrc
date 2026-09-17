@@ -10,7 +10,7 @@ setopt share_history
 [ "$HISTSIZE" -lt 50000 ] && HISTSIZE=50000
 [ "$SAVEHIST" -lt 10000 ] && SAVEHIST=10000
 
-export EDITOR=vim
+export EDITOR=nvim
 export VISUAL=vim
 
 autoload -U colors; colors
