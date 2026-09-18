@@ -48,4 +48,8 @@ bindkey -s ^f "sessioniser\n"
 # https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
 source "$HOME/.config/zsh/prompt.zsh"
 
-export PATH=$HOME/bin:$HOME/.local/bin:$HOME/go/bin:/usr/local/bin:$PATH
+export GOPATH=$HOME/go
+export GOTMPDIR=$HOME/.cache/go-tmp; mkdir -p "$GOTMPDIR"
+[[ -d /usr/local/go/bin ]] && PATH=/usr/local/go/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:$GOPATH/bin:/usr/local/bin:$PATH
+typeset -U PATH path  # dedupe on nested shells
