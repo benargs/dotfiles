@@ -43,13 +43,27 @@ end
 vim.diagnostic.config({ virtual_text = { current_line = true }, severity_sort = true })
 vim.o.completeopt = "menu,menuone,noinsert,popup"
 
+local FORMAT_ON_SAVE = { go = true, python = true, terraform = true, ["terraform-vars"] = true, lua = true }
+-- python has both pylsp and ruff attached; let ruff own formatting
+local NO_FORMAT = { pylsp = true }
+local function format(buf, async)
+  vim.lsp.buf.format({ bufnr = buf, async = async, timeout_ms = 2000, filter = function(c) return not NO_FORMAT[c.name] end })
+end
+
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(a)
     local client = vim.lsp.get_client_by_id(a.data.client_id)
     local map = function(lhs, rhs, desc) vim.keymap.set("n", lhs, rhs, { buffer = a.buf, desc = desc }) end
     map("gd", vim.lsp.buf.definition, "Go to definition")
     map("gD", vim.lsp.buf.declaration, "Go to declaration")
-    map("<leader>lf", function() vim.lsp.buf.format({ async = true }) end, "Format buffer")
+    map("<leader>lf", function() format(a.buf, true) end, "Format buffer")
+    if FORMAT_ON_SAVE[vim.bo[a.buf].filetype] and client and client:supports_method("textDocument/formatting") and not NO_FORMAT[client.name] then
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = vim.api.nvim_create_augroup("lsp_format_" .. a.buf, { clear = true }),
+        buffer = a.buf,
+        callback = function() format(a.buf, false) end,
+      })
+    end
     if client and client:supports_method("textDocument/completion") then
       vim.lsp.completion.enable(true, client.id, a.buf, { autotrigger = true })
       -- also open the menu from the 2nd character of a word (autotrigger alone only reacts to '.', ':' etc)
