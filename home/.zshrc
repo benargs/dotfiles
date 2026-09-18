@@ -21,8 +21,12 @@ autoload -U down-line-or-beginning-search
 # binds for completing/navigating history
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
-bindkey "^[[A" up-line-or-beginning-search
-bindkey "^[[B" down-line-or-beginning-search
+for k in "^[[A" "^[OA" "$terminfo[kcuu1]"; do
+  [[ -n "$k" ]] && bindkey "$k" up-line-or-beginning-search
+done
+for k in "^[[B" "^[OB" "$terminfo[kcud1]"; do
+  [[ -n "$k" ]] && bindkey "$k" down-line-or-beginning-search
+done
 
 alias vim=nvim
 alias vimvim=/usr/bin/vim
