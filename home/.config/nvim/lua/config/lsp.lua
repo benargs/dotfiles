@@ -1,3 +1,5 @@
+-- TODO: this thing needs a bit of a cleanup, it's a bit ugly to look at.. it got claude'd when i dropped mason
+
 local SERVERS = { gopls = "gopls", terraformls = "terraform-ls", pylsp = "pylsp", ruff = "ruff", lua_ls = "lua-language-server" }
 
 vim.lsp.config("gopls", {
@@ -56,7 +58,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local map = function(lhs, rhs, desc) vim.keymap.set("n", lhs, rhs, { buffer = a.buf, desc = desc }) end
     map("gd", vim.lsp.buf.definition, "Go to definition")
     map("gD", vim.lsp.buf.declaration, "Go to declaration")
-    map("<leader>lf", function() format(a.buf, true) end, "Format buffer")
+    -- this is pretty ugly and messy
+    if client and client.name == "ruff" then
+      map("<leader>rf", function()
+        vim.lsp.buf.code_action({
+          context = { only = { "source.fixAll" }, diagnostics = {} },
+          apply = true,
+        })
+      end, "Ruff: fix all")
+    end   map("<leader>lf", function() format(a.buf, true) end, "Format buffer")
     if FORMAT_ON_SAVE[vim.bo[a.buf].filetype] and client and client:supports_method("textDocument/formatting") and not NO_FORMAT[client.name] then
       vim.api.nvim_create_autocmd("BufWritePre", {
         group = vim.api.nvim_create_augroup("lsp_format_" .. a.buf, { clear = true }),
