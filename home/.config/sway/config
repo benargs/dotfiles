@@ -13,15 +13,16 @@ input "type:pointer" {
 
 # apps
 exec mako
-# idle: lock after $lock_after seconds, screen off $screen_off_after seconds after that
+set $term kitty
+set $menu fuzzel
+
+# idle
 set $lock_after 1800
 set $screen_off_after 300
 exec swayidle -w \
     timeout $lock_after 'swaylock' \
     timeout $(($lock_after + $screen_off_after)) 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
     lock 'swaylock' before-sleep 'swaylock'
-set $term kitty
-set $menu fuzzel
 
 # assignemnts
 assign [app_id="com.slack.Slack"] workspace number 5
@@ -73,6 +74,9 @@ workspace 10 output HDMI-A-1
 # binds
 bindsym $mod+Return exec $term
 bindsym $mod+space exec $menu
+# inline as i guess flags would have to change
+bindsym $mod+t exec firefox
+bindsym $mod+Shift+t exec firefox -private-window
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exec swaynag -t warning -m 'Do you really want to exit?' -B 'Yes, exit sway' 'swaymsg exit'
@@ -153,9 +157,6 @@ bar {
 }
 
 exec_always cat /proc/acpi/button/lid/LID/state | awk '{print $2}' | grep -q 'closed' && swaymsg output eDP-1 disable
-
-exec_always swaymsg workspace 1
-
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
 include /etc/sway/config.d/*
