@@ -1,22 +1,32 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# clicking the same bar item again closes this menu; any other open menu is replaced
 if pgrep -f "fuzzel.*--prompt wifi " >/dev/null; then pkill -x fuzzel; exit 0; fi
 pkill -x fuzzel || true
 
 menu() { fuzzel --dmenu --anchor top-right --y-margin 0 --x-margin 8 --width 36 --lines 8 --font "JetBrains Mono:size=8" "$@"; }
 
-(nmcli dev wifi rescan >/dev/null 2>&1 &)   # refresh for next time; show the cached list now
+if [[ $(nmcli -t radio wifi) != enabled ]]; then
+  printf '%s\n' "power on" | menu --prompt "wifi " >/dev/null || exit 0
+  nmcli radio wifi on && notify-send "wifi" "on"
+  exit 0
+fi
+
+(nmcli dev wifi rescan >/dev/null 2>&1 &)
 all=$(nmcli -t -f ACTIVE,SSID,SIGNAL,SECURITY dev wifi list --rescan no)
 current=$(awk -F: '$1 == "yes" { print $2; exit }' <<<"$all")
 rows=$(awk -F: '$2 != "" && !seen[$2]++' <<<"$all")
-[[ -n $rows ]] || { notify-send "wifi" "no networks found"; exit 0; }
 mapfile -t ssids < <(cut -d: -f2 <<<"$rows")
 
-i=$(awk -F: -v cur="$current" '{ printf "%s %-22s %3s%%  %s\n", ($2 == cur ? "*" : " "), $2, $3, $4 }' <<<"$rows" \
-    | menu --index --prompt "wifi ") || exit 0
-ssid=${ssids[$i]}
+i=$( { printf '%s\n' "power off"
+       awk -F: -v cur="$current" '{ printf "%s %-22s %3s%%  %s\n", ($2 == cur ? "*" : " "), $2, $3, $4 }' <<<"$rows"
+     } | menu --index --prompt "wifi " ) || exit 0
+
+if (( i == 0 )); then
+  nmcli radio wifi off && notify-send "wifi" "off"
+  exit 0
+fi
+ssid=${ssids[$((i - 1))]}
 
 if [[ $ssid == "$current" ]]; then
   nmcli connection down id "$ssid" && notify-send "wifi" "disconnected from $ssid"

@@ -37,11 +37,12 @@
         "on-click-right": "bluetoothctl show | grep -q 'Powered: yes' && bluetoothctl power off || bluetoothctl power on"
     },
     "network": {
-        "format-wifi": " {essid}",
+        "format-wifi": " {ipaddr}",
         "format-ethernet": " {ipaddr}",
         "format-disconnected": " offline",
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
-        "on-click": "~/.local/bin/wifi-menu"
+        "on-click": "~/.local/bin/wifi-menu",
+        "on-click-right": "nmcli -t radio wifi | grep -qx enabled && nmcli radio wifi off || nmcli radio wifi on"
     },
     "battery": {
         "states": { "warning": 30, "critical": 15 },
