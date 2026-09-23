@@ -155,7 +155,8 @@ bar {
     swaybar_command waybar
 }
 
-exec_always cat /proc/acpi/button/lid/LID/state | awk '{print $2}' | grep -q 'closed' && swaymsg output eDP-1 disable
+bindswitch --reload --locked lid:on  exec ~/.config/sway/lid.sh close
+bindswitch --reload --locked lid:off exec ~/.config/sway/lid.sh open
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
 include /etc/sway/config.d/*
