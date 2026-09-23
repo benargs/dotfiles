@@ -59,6 +59,8 @@ output * bg #1d1c19 solid_color
 output * adaptive_sync on 
 
 # this should also be managed with local config
+output HDMI-A-1 pos 0 0
+output DP-1 pos 2560 0
 output DP-1 mode 2560x1440@165.080Hz
 output HDMI-A-1 mode 2560x1440@60.000Hz
 workspace 1 output DP-1
