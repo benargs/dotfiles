@@ -20,7 +20,9 @@
         "format": "{icon} {volume}%",
         "format-muted": " muted",
         "format-icons": { "default": ["", "", ""] },
-        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+        "tooltip-format": "{desc}",
+        "on-click": "~/.local/bin/sound-menu",
+        "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
     },
     "bluetooth": {
         "format": " {status}",
