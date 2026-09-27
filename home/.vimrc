@@ -24,4 +24,11 @@ set background=dark
 let g:solarized_termcolors=256
 let g:solarized_termtrans=1
 
-" TODO: binds for switching to netrw
+set hidden " switch buffers without saving first (default in nvim)
+
+let mapleader = " "
+nnoremap <leader>pv :Ex<CR>
+nnoremap <leader>pb :ls<CR>:b<Space>
+nnoremap <leader>bd :bdelete<CR>
+nnoremap <S-h> :bprevious<CR>
+nnoremap <S-l> :bnext<CR>
