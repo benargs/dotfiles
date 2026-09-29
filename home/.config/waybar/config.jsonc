@@ -40,6 +40,8 @@
         "format-wifi": " {ipaddr}",
         "format-ethernet": " {ipaddr}",
         "format-disconnected": " offline",
+        "format-disabled": "󰖪 off",
+        "tooltip-format-disabled": "wifi off",
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
         "on-click": "~/.local/bin/wifi-menu",
         "on-click-right": "nmcli -t radio wifi | grep -qx enabled && nmcli radio wifi off || nmcli radio wifi on"

@@ -10,8 +10,12 @@ setopt share_history
 [ "$HISTSIZE" -lt 50000 ] && HISTSIZE=50000
 [ "$SAVEHIST" -lt 10000 ] && SAVEHIST=10000
 
-export EDITOR=nvim
-export VISUAL=vim
+if (( $+commands[nvim] )); then
+  export EDITOR=nvim
+else
+  export EDITOR=vim
+fi
+export VISUAL=$EDITOR
 
 autoload -U colors; colors
 autoload -U compinit; compinit
@@ -28,8 +32,10 @@ for k in "^[[B" "^[OB" "$terminfo[kcud1]"; do
   [[ -n "$k" ]] && bindkey "$k" down-line-or-beginning-search
 done
 
-alias vim=nvim
-alias vimvim=/usr/bin/vim
+if (( $+commands[nvim] )); then
+  alias vim=nvim
+  alias vimvim=/usr/bin/vim
+fi
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 
