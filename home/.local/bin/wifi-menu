@@ -24,7 +24,7 @@ i=$( { printf '%s\n' "power off"
 
 if (( i == 0 )); then
   nmcli radio wifi off && notify-send "wifi" "off"
-  exec "$0"
+  exit 0
 fi
 ssid=${ssids[$((i - 1))]}
 
