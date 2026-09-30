@@ -38,6 +38,7 @@ if (( $+commands[nvim] )); then
 fi
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
+alias k=kubectl
 
 export FZF_DEFAULT_COMMAND="rg --files --hidden -g '!.git'"
 export FZF_DEFAULT_OPTS="
