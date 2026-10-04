@@ -11,6 +11,8 @@ vim.opt.smartindent = true
 vim.opt.wrap = false
 vim.opt.clipboard = "unnamedplus"
 
+vim.filetype.add({ extension = { tf = "terraform" } })
+
 -- overwrites for indentation/whitespace stuff
 local INDENT = {
   lua = 2,
