@@ -29,6 +29,7 @@ stow zsh fzf tmux neovim kitty jq tree-sitter-cli
 # desktop
 sway swaybg swayidle swaylock waybar mako fuzzel
 grim slurp wl-clipboard swappy playerctl
+wf-recorder ffmpeg                # screen-record (ffmpeg only for gifs)
 brightnessctl                     # debian/ubuntu: also `usermod -aG video $USER`, relogin
 xdg-desktop-portal-wlr pipewire   # screen sharing
 
@@ -52,3 +53,12 @@ so parsers and queries match. `treesitter.lua` highlights whatever the json list
 Adding or updating a language: take its url + revision from nvim-treesitter's
 `lua/nvim-treesitter/parsers.lua` at `NVIM_TS_REF` into the json, `treesitter-install <lang>`.
 To move everything forward, bump `NVIM_TS_REF` and redo the hashes from that commit's parsers.lua.
+
+## Migrating ~/repos to ~/src
+
+The stow links are relative, so moving the checkout breaks them all. Unstow, move and restow
+in one go (close tmux/nvim sessions in `~/repos` first):
+
+```sh
+cd ~/repos/benargs/dotfiles && stow -D home && mv ~/repos ~/src && cd ~/src/benargs/dotfiles && stow home
+```

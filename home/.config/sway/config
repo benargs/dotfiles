@@ -98,6 +98,8 @@ bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 # screenshots: drag a region -> clipboard / edit in swappy
 bindsym $mod+Shift+s exec grim -g "$(slurp)" - | wl-copy
 bindsym $mod+Ctrl+Shift+s exec grim -g "$(slurp)" - | swappy -f -
+# recording: drag a region to start, same key to stop -> copy / gif / open / delete
+bindsym $mod+Shift+r exec ~/.local/bin/screen-record
 
 bindsym $mod+1 workspace number 1
 bindsym $mod+2 workspace number 2

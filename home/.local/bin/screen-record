@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# press once: drag a region and start recording. press again: stop, then pick what
+# to do with the clip (swappy, but for video). `screen-record status` feeds waybar.
+
+pidfile=${XDG_RUNTIME_DIR:-/tmp}/screen-record.pid
+dir=$HOME/Videos
+bar() { pkill -RTMIN+8 waybar || true; }
+
+recording() { [[ -f $pidfile ]] && kill -0 "$(<"$pidfile")" 2>/dev/null; }
+
+if [[ ${1:-} == status ]]; then
+  recording && echo '{"text": " rec", "tooltip": "recording, click to stop", "class": "recording"}'
+  exit 0
+fi
+
+# TERM not INT: background jobs of a script start with SIGINT ignored
+if recording; then kill "$(<"$pidfile")"; exit 0; fi
+
+# keybinds have nowhere to print errors, so keep the last run's
+exec 2>"${XDG_RUNTIME_DIR:-/tmp}/screen-record.log"
+
+# h264 wants even dimensions, slurp happily hands out odd ones
+sel=$(slurp -f '%x %y %w %h') || exit 0
+read -r x y w h <<<"$sel"
+geom="$x,$y $((w / 2 * 2))x$((h / 2 * 2))"
+
+mkdir -p "$dir"
+file=$dir/rec-$(date +%F_%H-%M-%S).mp4
+# fedora's ffmpeg-free has no libx264; openh264 still gives an mp4 slack/browsers play
+codec=libx264
+grep -q ' libx264 ' <(ffmpeg -hide_banner -encoders 2>/dev/null) || codec=libopenh264
+wf-recorder -g "$geom" -c "$codec" -f "$file" </dev/null >&2 &
+echo $! >"$pidfile"
+done_recording() { rm -f "$pidfile"; bar; }
+trap done_recording EXIT
+bar
+notify-send -t 2000 "recording" "press again to stop"
+wait || true
+done_recording
+
+[[ -s $file ]] || { notify-send "recording" "failed, nothing saved"; exit 1; }
+
+copy() { wl-copy -t text/uri-list "file://$1"; notify-send "recording" "copied ${1##*/}"; }
+gif() {
+  local out=${file%.mp4}.gif
+  ffmpeg -loglevel error -y -i "$file" \
+    -vf "fps=15,scale='min(iw,1280)':-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse" "$out"
+  copy "$out"
+}
+
+choice=$(printf '%s\n' copy gif open delete |
+  fuzzel --dmenu --lines 4 --width 24 --prompt "${file##*/} ") || choice=keep
+
+case $choice in
+  copy) copy "$file" ;;
+  gif) gif ;;
+  open) xdg-open "$file" ;;
+  delete) rm -f "$file"; notify-send "recording" "deleted" ;;
+  *) notify-send "recording" "saved to ${file/#$HOME/\~}" ;;
+esac

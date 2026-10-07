@@ -6,7 +6,7 @@
 
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["clock"],
-    "modules-right": ["pulseaudio", "bluetooth", "network", "battery", "tray", "custom/power"],
+    "modules-right": ["custom/recording", "pulseaudio", "bluetooth", "network", "battery", "tray", "custom/power"],
 
     "sway/workspaces": {
         "disable-scroll": true,
@@ -54,6 +54,13 @@
     },
     "tray": {
         "spacing": 8
+    },
+    "custom/recording": {
+        "exec": "~/.local/bin/screen-record status",
+        "return-type": "json",
+        "interval": "once",
+        "signal": 8,
+        "on-click": "~/.local/bin/screen-record"
     },
     "custom/power": {
         "format": "",

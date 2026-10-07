@@ -3,10 +3,10 @@
 if [[ $# -eq 1 ]]; then
   selected=$1
 else
-  # the repos/* assumes that repos is a parent to things above git repos
-  # for example, I will usually have repos/{org} or repos/{owner}.
-  # If repos is flat then just remove the *, or just list dirs to fuzzy 
-  selected=$(FZF_TMUX=1 find ~/repos/* ~ -mindepth 1 -maxdepth 1 -type d | fzf)
+  # the src/* assumes that src is a parent to things above git repos
+  # for example, I will usually have src/{org} or src/{owner}.
+  # If src is flat then just remove the *, or just list dirs to fuzzy
+  selected=$(FZF_TMUX=1 find ~/src/* ~ -mindepth 1 -maxdepth 1 -type d | fzf)
 fi
 
 if [[ -z $selected ]]; then
