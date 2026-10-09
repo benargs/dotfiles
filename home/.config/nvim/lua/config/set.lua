@@ -46,3 +46,9 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.bo[a.buf].expandtab = not tabs
   end,
 })
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+  callback = function()
+    vim.hl.on_yank({ higroup = "YankHighlight", timeout = 200 })
+  end,
+})
