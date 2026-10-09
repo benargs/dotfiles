@@ -42,6 +42,15 @@ adw-gtk3-theme
 alacritty
 ```
 
+## Video codecs (Fedora)
+
+```sh
+sudo dnf install \
+  https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+  https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf swap ffmpeg-free ffmpeg --allowerasing
+```
+
 ## Treesitter
 
 No nvim-treesitter plugin. Parsers are pinned in `home/.config/nvim/treesitter.json` (url +
