@@ -1,0 +1,77 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 28,
+    "spacing": 8,
+
+    "modules-left": ["sway/workspaces", "sway/mode"],
+    "modules-center": ["clock"],
+    "modules-right": ["custom/recording", "pulseaudio", "bluetooth", "network", "battery", "tray", "custom/power"],
+
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "format": "{name}"
+    },
+    "clock": {
+        "format": " {:%a %d %b  %H:%M}",
+        "tooltip-format": "<tt>{calendar}</tt>"
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": " muted",
+        "format-icons": { "default": ["", "", ""] },
+        "tooltip-format": "{desc}",
+        "on-click": "~/.local/bin/sound-menu",
+        "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    },
+    "bluetooth": {
+        "format": " {status}",
+        "format-disabled": " off",
+        "format-off": " off",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\n{num_connections} connected\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}",
+        "on-click": "~/.local/bin/bluetooth-menu",
+        "on-click-right": "bluetoothctl show | grep -q 'Powered: yes' && bluetoothctl power off || bluetoothctl power on"
+    },
+    "network": {
+        "format-wifi": " {ipaddr}",
+        "format-ethernet": " {ipaddr}",
+        "format-disconnected": " offline",
+        "format-disabled": "󰖪 off",
+        "tooltip-format-disabled": "wifi off",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
+        "on-click": "~/.local/bin/wifi-menu",
+        "on-click-right": "nmcli -t radio wifi | grep -qx enabled && nmcli radio wifi off || nmcli radio wifi on"
+    },
+    "battery": {
+        "states": { "warning": 30, "critical": 15 },
+        "format": "{icon} {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-icons": ["", "", "", "", ""]
+    },
+    "tray": {
+        "spacing": 8
+    },
+    "custom/recording": {
+        "exec": "~/.local/bin/screen-record status",
+        "return-type": "json",
+        "interval": "once",
+        "signal": 8,
+        "on-click": "~/.local/bin/screen-record"
+    },
+    "custom/power": {
+        "format": "",
+        "tooltip": false,
+        "menu": "on-click",
+        "menu-file": "$HOME/.config/waybar/power-menu.xml",
+        "menu-actions": {
+            "lock": "swaylock",
+            "logout": "swaynag -t warning -m 'Log out?' -B 'Log out' 'swaymsg exit'",
+            "reboot": "swaynag -t warning -m 'Reboot?' -B 'Reboot' 'systemctl reboot'",
+            "shutdown": "swaynag -t warning -m 'Shut down?' -B 'Shut down' 'systemctl poweroff'"
+        }
+    }
+}

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# install [--headless] [--deps] [stow args...]   link the dotfiles into ~ (re-stow, so safe to rerun).
+# home/ is everything that works over ssh, desktop/ is the sway session on top. --headless skips
+# desktop/, --deps installs the packages each half needs first. Anything else goes to stow, e.g.
+# `./install -n -v` for a dry run or `./install -D` to unlink.
+set -euo pipefail
+cd "$(dirname "$0")"
+
+home_deps=(stow zsh fzf tmux neovim jq tree-sitter-cli)
+desktop_deps=(
+  kitty
+  sway swaybg swayidle swaylock waybar mako fuzzel
+  grim slurp wl-clipboard swappy playerctl
+  wf-recorder brightnessctl
+  xdg-desktop-portal-wlr pipewire
+  jetbrains-mono-fonts fontawesome-6-free-fonts adw-gtk3-theme
+)
+
+packages=(home desktop) deps=0 stow_args=()
+for arg; do
+  case $arg in
+    --headless) packages=(home) ;;
+    --deps) deps=1 ;;
+    *) stow_args+=("$arg") ;;
+  esac
+done
+
+if (( deps )); then
+  want=("${home_deps[@]}")
+  [[ " ${packages[*]} " == *" desktop "* ]] && want+=("${desktop_deps[@]}")
+  if command -v dnf >/dev/null; then
+    sudo dnf install -y "${want[@]}"
+  elif command -v apt-get >/dev/null; then
+    want=("${want[@]/jetbrains-mono-fonts/fonts-jetbrains-mono}")
+    want=("${want[@]/fontawesome-6-free-fonts/fonts-font-awesome}")
+    sudo apt-get install -y "${want[@]}"
+  else
+    echo "no dnf or apt-get, install these yourself: ${want[*]}" >&2; exit 1
+  fi
+fi
+
+stow -R "${stow_args[@]}" "${packages[@]}"

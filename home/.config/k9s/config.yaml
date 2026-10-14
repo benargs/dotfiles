@@ -1,0 +1,5 @@
+k9s:
+  ui:
+    skin: kanagawa-dragon
+    logoless: true
+    headless: false

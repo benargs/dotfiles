@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# clicking the same bar item again closes this menu; any other open menu is replaced
+if pgrep -f "fuzzel.*--prompt sound " >/dev/null; then pkill -x fuzzel; exit 0; fi
+pkill -x fuzzel || true
+
+menu() { fuzzel --dmenu --anchor top-right --y-margin 0 --x-margin 8 --width 56 --lines 12 --font "JetBrains Mono:size=8" "$@"; }
+
+# prints "name<TAB>description" for each sink/source, skipping monitor sources
+devices() { LC_ALL=C pactl list "$1" | awk '/^\tName:/ { n = $2 } /^\tDescription:/ { sub(/^\tDescription: /, ""); if (n !~ /\.monitor$/) print n "\t" $0 }'; }
+
+labels=() targets=()
+add() { labels+=("$1"); targets+=("$2"); }
+for kind in sink source; do
+  default=$(pactl get-default-$kind)
+  [[ $kind == sink ]] && tag=out || tag=in
+  while IFS=$'\t' read -r name desc; do
+    [[ $name == "$default" ]] && mark="*" || mark=" "
+    add "$tag $mark $desc" "$kind $name"
+  done < <(devices ${kind}s)
+done
+mic_muted=$(pactl get-source-mute @DEFAULT_SOURCE@ | awk '{ print $2 }')
+[[ $mic_muted == yes ]] && add "unmute mic" mic || add "mute mic" mic
+
+i=$(printf '%s\n' "${labels[@]}" | menu --index --prompt "sound ") || exit 0
+read -r kind name <<<"${targets[$i]}"; desc=${labels[$i]#* ? }
+
+case $kind in
+  sink) pactl set-default-sink "$name" && notify-send "sound" "output: $desc" ;;
+  source) pactl set-default-source "$name" && notify-send "sound" "input: $desc" ;;
+  mic) pactl set-source-mute @DEFAULT_SOURCE@ toggle ;;
+esac

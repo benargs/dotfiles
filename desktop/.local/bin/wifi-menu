@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if pgrep -f "fuzzel.*--prompt wifi " >/dev/null; then pkill -x fuzzel; exit 0; fi
+pkill -x fuzzel || true
+
+menu() { fuzzel --dmenu --anchor top-right --y-margin 0 --x-margin 8 --width 36 --lines 8 --font "JetBrains Mono:size=8" "$@"; }
+
+if [[ $(nmcli -t radio wifi) != enabled ]]; then
+  printf '%s\n' "power on" | menu --prompt "wifi " >/dev/null || exit 0
+  nmcli radio wifi on && notify-send "wifi" "on"
+  exit 0
+fi
+
+(nmcli dev wifi rescan >/dev/null 2>&1 &)
+all=$(nmcli -t -f ACTIVE,SSID,SIGNAL,SECURITY dev wifi list --rescan no)
+current=$(awk -F: '$1 == "yes" { print $2; exit }' <<<"$all")
+rows=$(awk -F: '$2 != "" && !seen[$2]++' <<<"$all")
+mapfile -t ssids < <(cut -d: -f2 <<<"$rows")
+
+i=$( { printf '%s\n' "power off"
+       awk -F: -v cur="$current" '{ printf "%s %-22s %3s%%  %s\n", ($2 == cur ? "*" : " "), $2, $3, $4 }' <<<"$rows"
+     } | menu --index --prompt "wifi " ) || exit 0
+
+if (( i == 0 )); then
+  nmcli radio wifi off && notify-send "wifi" "off"
+  exit 0
+fi
+ssid=${ssids[$((i - 1))]}
+
+if [[ $ssid == "$current" ]]; then
+  nmcli connection down id "$ssid" && notify-send "wifi" "disconnected from $ssid"
+elif nmcli -t -f NAME connection show | grep -qx -- "$ssid"; then
+  nmcli connection up id "$ssid" && notify-send "wifi" "connected to $ssid"
+else
+  pw=$(menu --password --prompt "password for $ssid: " --lines 0 < /dev/null) || exit 0
+  nmcli dev wifi connect "$ssid" password "$pw" && notify-send "wifi" "connected to $ssid" \
+    || notify-send -u critical "wifi" "failed to connect to $ssid"
+fi
