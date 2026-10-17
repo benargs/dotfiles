@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+players=(--all-players --ignore-player=spotify)
+
+playing() { playerctl "${players[@]}" status 2>/dev/null | grep -qx Playing; }
+
+# --follow prints a line whenever any player changes state (or goes away)
+playerctl "${players[@]}" --follow status 2>/dev/null | while read -r _; do
+  if playing; then
+    swaymsg -q '[all] inhibit_idle open'
+  else
+    swaymsg -q '[all] inhibit_idle fullscreen'
+  fi
+done
