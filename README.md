@@ -27,6 +27,8 @@ When adding a config, put it in `desktop/` if it only means something with a dis
 
 ## Next steps
 
+Change shell to zsh `chsh -s $(which zsh)`.
+
 ```sh
 treesitter-install                   # nvim parsers, see Treesitter below
 sudo dnf install gopls               # or apt-get

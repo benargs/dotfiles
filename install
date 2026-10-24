@@ -6,7 +6,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-home_deps=(stow git curl gcc zsh fzf tmux neovim jq tree-sitter-cli)
+home_deps=(stow vim tig git curl gcc zsh fzf tmux neovim jq glow btop tree-sitter-cli)
 desktop_deps=(
   kitty
   sway swaybg swayidle swaylock waybar mako fuzzel
