@@ -25,6 +25,21 @@ Useful stuff (anything `install` doesn't recognise goes to stow):
 
 When adding a config, put it in `desktop/` if it only means something with a display.
 
+## Next steps
+
+```sh
+treesitter-install                   # nvim parsers, see Treesitter below
+sudo dnf install gopls               # or apt-get
+uv tool install python-lsp-server    # pylsp
+uv tool install ruff
+setup-gnome                          # if GNOME is installed too: tweaks its defaults, e.g. sway-style workspaces
+```
+
+terraform-ls comes from [HashiCorp's repo](https://developer.hashicorp.com/terraform/install), and
+lua-language-server is a [release](https://github.com/LuaLS/lua-language-server/releases) unpacked
+into `~/.local/opt` with its `bin/lua-language-server` linked into `~/.local/bin`. nvim only starts
+the servers it can find.
+
 ## Dependencies
 
 Installed by `./install --deps`, except:

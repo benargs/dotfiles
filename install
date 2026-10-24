@@ -6,13 +6,14 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-home_deps=(stow zsh fzf tmux neovim jq tree-sitter-cli)
+home_deps=(stow git curl gcc zsh fzf tmux neovim jq tree-sitter-cli)
 desktop_deps=(
   kitty
   sway swaybg swayidle swaylock waybar mako fuzzel
   grim slurp wl-clipboard swappy playerctl
-  wf-recorder brightnessctl
-  xdg-desktop-portal-wlr pipewire
+  wf-recorder brightnessctl libnotify xdg-utils
+  xdg-desktop-portal-wlr pipewire wireplumber pulseaudio-utils
+  bluez NetworkManager
   jetbrains-mono-fonts fontawesome-6-free-fonts adw-gtk3-theme
 )
 
@@ -33,6 +34,8 @@ if (( deps )); then
   elif command -v apt-get >/dev/null; then
     want=("${want[@]/jetbrains-mono-fonts/fonts-jetbrains-mono}")
     want=("${want[@]/fontawesome-6-free-fonts/fonts-font-awesome}")
+    want=("${want[@]/libnotify/libnotify-bin}")
+    want=("${want[@]/NetworkManager/network-manager}")
     sudo apt-get install -y "${want[@]}"
   else
     echo "no dnf or apt-get, install these yourself: ${want[*]}" >&2; exit 1
@@ -40,3 +43,4 @@ if (( deps )); then
 fi
 
 stow -R "${stow_args[@]}" "${packages[@]}"
+echo "Installation complete! See 'next steps' in README.md"
