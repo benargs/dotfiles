@@ -7,6 +7,7 @@ the sway session on top (sway, waybar, kitty, the menu scripts, ...). From the r
 ```sh
 ./install --deps              # laptop: packages + home + desktop
 ./install --deps --headless   # dev box: packages + home only
+./install --deps --hard       # copy files instead of linking, then rm the repo
 ```
 
 `install` is a thin wrapper: `stow -R` over the packages for the profile, plus `--deps` to

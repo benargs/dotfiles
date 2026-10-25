@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# install [--headless] [--deps] [stow args...]   link the dotfiles into ~ (re-stow, so safe to rerun).
+# install [--headless] [--deps] [--hard] [stow args...]   link the dotfiles into ~ (re-stow, so safe to rerun).
 # home/ is everything that works over ssh, desktop/ is the sway session on top. --headless skips
-# desktop/, --deps installs the packages each half needs first. Anything else goes to stow, e.g.
+# desktop/, --deps installs the packages each half needs first, --hard copies the files instead of
+# linking them, so the repo can be deleted afterwards. Anything else goes to stow, e.g.
 # `./install -n -v` for a dry run or `./install -D` to unlink.
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -17,11 +18,12 @@ desktop_deps=(
   jetbrains-mono-fonts fontawesome-6-free-fonts adw-gtk3-theme
 )
 
-packages=(home desktop) deps=0 stow_args=()
+packages=(home desktop) deps=0 hard=0 stow_args=()
 for arg; do
   case $arg in
     --headless) packages=(home) ;;
     --deps) deps=1 ;;
+    --hard) hard=1 ;;
     *) stow_args+=("$arg") ;;
   esac
 done
@@ -42,5 +44,10 @@ if (( deps )); then
   fi
 fi
 
-stow -R "${stow_args[@]}" "${packages[@]}"
+if (( hard )); then
+  (( ${#stow_args[@]} == 0 )) || { echo "--hard doesn't take stow args: ${stow_args[*]}" >&2; exit 1; }
+  for p in "${packages[@]}"; do cp -a --remove-destination "$p/." ~/; done
+else
+  stow -R "${stow_args[@]}" "${packages[@]}"
+fi
 echo "Installation complete! See 'next steps' in README.md"
