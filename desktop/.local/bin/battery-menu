@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# power profile + charge limit, the same two knobs as GNOME's power settings. both go through
+# D-Bus (power-profiles-daemon or tuned-ppd, and UPower), so what one desktop sets the other sees.
+set -euo pipefail
+
+pp=(org.freedesktop.UPower.PowerProfiles /org/freedesktop/UPower/PowerProfiles org.freedesktop.UPower.PowerProfiles)
+# not every daemon owns the newer name yet, the original one is always there
+busctl --system status "${pp[0]}" &>/dev/null || pp=(net.hadess.PowerProfiles /net/hadess/PowerProfiles net.hadess.PowerProfiles)
+pp_get() { busctl --system --json=short get-property "${pp[@]}" "$1" | jq -r "$2"; }
+bat_get() { busctl --system get-property org.freedesktop.UPower "$1" org.freedesktop.UPower.Device "$2" | cut -d' ' -f2; }
+bar() { pkill -RTMIN+9 waybar || true; }
+# first battery whose driver exposes charge_control_*_threshold (skips mice, headsets, ...)
+find_bat() {
+  local dev
+  for dev in $(upower -e 2>/dev/null || true); do
+    if [[ $(bat_get "$dev" ChargeThresholdSupported 2>/dev/null) == true ]]; then echo "$dev"; return; fi
+  done
+}
+# a laptop battery, not a mouse or headset (those have scope Device)
+has_battery() {
+  local d
+  for d in /sys/class/power_supply/*; do
+    [[ $(cat "$d/type" 2>/dev/null) == Battery && $(cat "$d/scope" 2>/dev/null) != Device ]] && return 0
+  done
+  return 1
+}
+
+# `battery-menu status` feeds waybar's profile icon, with the charge limit in its tooltip. no
+# daemon on a desktop prints nothing, which hides it; on a laptop it stays as a dimmed nudge
+if [[ ${1:-} == status ]]; then
+  bat=$(find_bat) limit=""
+  if [[ -n $bat ]]; then
+    if [[ $(bat_get "$bat" ChargeThresholdEnabled) == true ]]; then
+      limit="\\ncharge limit: on, stops at $(bat_get "$bat" ChargeEndThreshold)%"
+    else
+      limit="\\ncharge limit: off"
+    fi
+  fi
+  if p=$(pp_get ActiveProfile .data 2>/dev/null); then
+    printf '{"text": "%s", "alt": "%s", "class": "%s", "tooltip": "power profile: %s%s"}\n' "$p" "$p" "$p" "$p" "$limit"
+  elif has_battery; then
+    printf '{"text": "none", "alt": "missing", "class": "missing", "tooltip": "no power profiles daemon\\ninstall tuned-ppd (fedora) or power-profiles-daemon%s"}\n' "$limit"
+  fi
+  exit 0
+fi
+
+if pgrep -f "fuzzel.*--prompt battery " >/dev/null; then pkill -x fuzzel; exit 0; fi
+pkill -x fuzzel || true
+
+menu() { fuzzel --dmenu --anchor top-right --y-margin 0 --x-margin 8 --width 36 --lines 8 --font "JetBrains Mono:size=8" "$@"; }
+
+labels=() targets=()
+add() { labels+=("$1"); targets+=("$2"); }
+
+if current=$(pp_get ActiveProfile .data 2>/dev/null); then
+  while read -r p; do
+    add "$([[ $p == "$current" ]] && echo '*' || echo ' ') $p" "profile $p"
+  done < <(pp_get Profiles '.data[].Profile.data')
+fi
+
+bat=$(find_bat)
+if [[ -n $bat ]]; then
+  limit=$(bat_get "$bat" ChargeThresholdEnabled)
+  start=$(bat_get "$bat" ChargeStartThreshold) end=$(bat_get "$bat" ChargeEndThreshold)
+  add "$([[ $limit == true ]] && echo '*' || echo ' ') limit charge to ${end}%" limit
+fi
+
+(( ${#labels[@]} )) || { notify-send "battery" "no power profiles daemon or charge limit support"; exit 0; }
+
+i=$(printf '%s\n' "${labels[@]}" | menu --index --prompt "battery ") || exit 0
+read -r action arg <<<"${targets[$i]}"
+
+case $action in
+  profile)
+    busctl --system set-property "${pp[@]}" ActiveProfile s "$arg" && notify-send "power profile" "$arg" \
+      || notify-send -u critical "power profile" "failed to switch to $arg"
+    bar ;;
+  limit)
+    if [[ $limit == true ]]; then want=false msg="off, charging to 100%"
+    else want=true msg="on, charging stops at ${end}% and resumes below ${start}%"; fi
+    if err=$(busctl --system call org.freedesktop.UPower "$bat" org.freedesktop.UPower.Device EnableChargeThreshold b "$want" 2>&1); then
+      notify-send "charge limit" "$msg"
+    else
+      notify-send -u critical "charge limit" "$err"
+    fi
+    bar ;;
+esac

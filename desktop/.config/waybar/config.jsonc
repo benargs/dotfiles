@@ -6,7 +6,7 @@
 
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["clock"],
-    "modules-right": ["custom/recording", "pulseaudio", "bluetooth", "network", "battery", "tray", "custom/power"],
+    "modules-right": ["custom/recording", "pulseaudio", "bluetooth", "network", "group/energy", "tray", "custom/power"],
 
     "sway/workspaces": {
         "disable-scroll": true,
@@ -49,8 +49,28 @@
     "battery": {
         "states": { "warning": 30, "critical": 15 },
         "format": "{icon} {capacity}%",
+        "format-plugged": "\uf1e6 {capacity}%",
         "format-charging": " {capacity}%",
-        "format-icons": ["", "", "", "", ""]
+        "format-icons": ["", "", "", "", ""],
+        "on-click": "~/.local/bin/battery-menu"
+    },
+    "group/energy": {
+        "orientation": "horizontal",
+        "modules": ["custom/profile", "battery"]
+    },
+    "custom/profile": {
+        "exec": "~/.local/bin/battery-menu status",
+        "return-type": "json",
+        "interval": 30,
+        "signal": 9,
+        "format": "{icon}",
+        "format-icons": {
+            "performance": "\uf625",
+            "balanced": "\uf24e",
+            "power-saver": "\uf06c",
+            "missing": "\uf05e"
+        },
+        "on-click": "~/.local/bin/battery-menu"
     },
     "tray": {
         "spacing": 8

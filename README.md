@@ -50,6 +50,7 @@ Installed by `./install --deps`, except:
 ```
 ffmpeg            # screen-record gifs; Fedora needs rpmfusion, see below
 alacritty         # optional
+tuned-ppd         # battery-menu power profiles; power-profiles-daemon on debian/ubuntu (GNOME installs have one)
 ```
 
 brightnessctl on debian/ubuntu also wants `usermod -aG video $USER` and a relogin.

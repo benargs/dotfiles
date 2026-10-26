@@ -38,7 +38,7 @@ window#waybar {
     color: #b6927b;
 }
 
-#clock, #pulseaudio, #bluetooth, #network, #battery, #tray, #custom-power, #custom-recording {
+#clock, #pulseaudio, #bluetooth, #network, #tray, #custom-power, #custom-recording {
     padding: 0 10px;
 }
 
@@ -47,13 +47,16 @@ window#waybar {
 #bluetooth  { color: #8ba4b0; }
 #network    { color: #949fb5; }
 #battery    { color: #87a987; }
+
+#custom-profile { color: #a6a69c; padding: 0 6px 0 10px; }
+#battery        { padding: 0 10px 0 6px; }
 #custom-power { color: #c4746e; padding-right: 12px; }
 #custom-recording { color: #c4746e; }
 
-#battery.charging  { color: #8ea4a2; }
+#battery.charging, #battery.plugged { color: #8ea4a2; }
 #battery.warning   { color: #c4b28a; }
 #battery.critical  { color: #c4746e; }
-#network.disconnected, #pulseaudio.muted, #bluetooth.disabled, #bluetooth.off {
+#network.disconnected, #pulseaudio.muted, #bluetooth.disabled, #bluetooth.off, #custom-profile.missing {
     color: #625e5a;
 }
 

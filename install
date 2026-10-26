@@ -14,7 +14,7 @@ desktop_deps=(
   grim slurp wl-clipboard swappy playerctl
   wf-recorder brightnessctl libnotify xdg-utils
   xdg-desktop-portal-wlr pipewire wireplumber pulseaudio-utils
-  bluez NetworkManager
+  bluez NetworkManager upower
   jetbrains-mono-fonts fontawesome-6-free-fonts adw-gtk3-theme
 )
 
