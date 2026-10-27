@@ -9,3 +9,15 @@ for i in {1..9}; do
   gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-$i "['<Super>$i']"
   gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-$i "['<Super><Shift>$i']"
 done
+
+for ext in dash-to-dock dash-to-panel; do
+  schema=org.gnome.shell.extensions.$ext
+  if gsettings list-keys "$schema" &>/dev/null; then
+    gsettings set "$schema" hot-keys false
+  fi
+  for dir in ~/.local/share/gnome-shell/extensions/"$ext"@*/schemas; do
+    if [[ -d $dir ]]; then
+      gsettings --schemadir "$dir" set "$schema" hot-keys false
+    fi
+  done
+done
