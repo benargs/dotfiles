@@ -58,7 +58,7 @@ floating_modifier $mod normal
 
 # override per machine with `output * bg <image> fill` in ~/.config/sway/local
 output * bg #1d1c19 solid_color
-output * adaptive_sync on 
+output * adaptive_sync off
 
 # this should also be managed with local config
 output HDMI-A-1 pos 0 0
