@@ -2,8 +2,9 @@ local M = {}
 
 local ns = vim.api.nvim_create_namespace("tree")
 local WIDTH = 32
+local RESIZE_STEP = 4
 
-local state = { buf = nil, win = nil, root = nil, open = {}, hidden = true, items = {} }
+local state = { buf = nil, win = nil, root = nil, open = {}, hidden = true, items = {}, width = WIDTH }
 
 local function list(dir)
   local dirs, files = {}, {}
@@ -82,7 +83,7 @@ local function focus_editor()
   if not target then
     vim.cmd("vertical rightbelow new")
     target = vim.api.nvim_get_current_win()
-    vim.api.nvim_win_set_width(state.win, WIDTH)
+    vim.api.nvim_win_set_width(state.win, state.width)
   end
   vim.api.nvim_set_current_win(target)
 end
@@ -117,6 +118,17 @@ vim.api.nvim_create_autocmd("WinClosed", {
         if not ok then vim.notify(tostring(err), vim.log.levels.ERROR) end
       end
     end)
+  end,
+})
+
+-- remember the width however it was changed (keys, <C-w>>, mouse drag) so it survives a toggle.
+-- a lone tree window is full-screen, which isn't a width worth keeping
+vim.api.nvim_create_autocmd("WinResized", {
+  group = group,
+  callback = function()
+    local win = state.win
+    if not (win and vim.api.nvim_win_is_valid(win) and vim.tbl_contains(vim.v.event.windows, win)) then return end
+    if #vim.api.nvim_tabpage_list_wins(0) > 1 then state.width = vim.api.nvim_win_get_width(win) end
   end,
 })
 
@@ -203,6 +215,22 @@ local function reveal(path)
   end
   render()
   goto_path(path)
+end
+
+local function resize(delta)
+  vim.api.nvim_win_set_width(state.win, vim.api.nvim_win_get_width(state.win) + delta)
+end
+
+-- widen to fit the longest visible name (not the root path on line 1), capped at half the screen;
+-- again goes back to the default
+local function fit()
+  local want = WIDTH
+  for _, line in ipairs(vim.api.nvim_buf_get_lines(state.buf, 1, -1, false)) do
+    want = math.max(want, vim.fn.strdisplaywidth(line) + 1)
+  end
+  want = math.min(want, math.floor(vim.o.columns / 2))
+  local fitted = vim.api.nvim_win_get_width(state.win) == want
+  vim.api.nvim_win_set_width(state.win, fitted and WIDTH or want)
 end
 
 local function err(msg) vim.notify(msg, vim.log.levels.ERROR) end
@@ -297,6 +325,9 @@ local function ensure_buf()
   map("-", up_dir, "Go up a directory")
   map("H", toggle_hidden, "Toggle hidden files")
   map("<C-l>", refresh, "Refresh")
+  map(">", function() resize(RESIZE_STEP) end, "Widen tree")
+  map("<", function() resize(-RESIZE_STEP) end, "Narrow tree")
+  map("=", fit, "Fit tree to longest name / back to default width")
   map("%", new_file, "New file")
   map("d", new_dir, "New directory")
   map("D", delete, "Delete")
@@ -316,7 +347,7 @@ function M.open()
   local file = vim.api.nvim_buf_get_name(0)
   ensure_buf()
 
-  vim.cmd("topleft " .. WIDTH .. "vsplit")
+  vim.cmd("topleft " .. state.width .. "vsplit")
   state.win = vim.api.nvim_get_current_win()
   vim.api.nvim_win_set_buf(state.win, state.buf)
   local wo = vim.wo[state.win]
