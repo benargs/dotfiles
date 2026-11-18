@@ -1,7 +1,7 @@
 ## dotfiles
 
 Everything under `home/` and `desktop/` mirrors `~`, and [GNU Stow](https://www.gnu.org/software/stow/)
-puts it there. `home/` is everything that's useful over ssh (zsh, nvim, tmux, ...), `desktop/` is
+puts it there. `home/` is everything that's useful over ssh (zsh, fish, nvim, tmux, ...), `desktop/` is
 the sway session on top (sway, waybar, kitty, the menu scripts, ...). From the root of the repo:
 
 ```sh
@@ -28,7 +28,12 @@ When adding a config, put it in `desktop/` if it only means something with a dis
 
 ## Next steps
 
-Change shell to zsh `chsh -s $(which zsh)`.
+Pick a login shell, both are configured the same (prompt, fzf, aliases, package cooldowns):
+
+```sh
+chsh -s $(which zsh)
+chsh -s $(which fish)
+```
 
 ```sh
 treesitter-install                   # nvim parsers, see Treesitter below
